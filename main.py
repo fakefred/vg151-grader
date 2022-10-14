@@ -101,18 +101,16 @@ if __name__ == "__main__":
         dumpJson(totalScores, "output/scores.json")
 
     if args.upload:
+        if not totalScores:
+            totalScores = loadJson("output/scores.json")
         canvasWorker = CanvasWorker(
             args,
             RUBRIC,
             CANVAS_TOKEN,
             COURSE_ID,
             names,
-            indvScores,
-            groupScores,
-            jojScores,
+            totalScores,
         )
-        if not totalScores:
-            totalScores = loadJson("output/scores.json")
         canvasWorker.grade2Canvas()
 
     if args.proj:
