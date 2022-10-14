@@ -1,3 +1,41 @@
+# ENGR151 Grader
+
+VG101-Grade-Helper, reformatted, several bugs fixed.
+
+Other changes and notes:
+
+- Directly running with `-au` (check all, upload to canvas immediately) is
+  _not_ recommended given how unstable JOJ is. Instead, run first with
+  `-s` (export score to `output/scores.json`) and _without_ `-u`.
+- JOJ is now single-processed. Expect turtle speed for matlab.
+- Upload grades from `output/scores.json` to canvas by running with
+  `-u` and without any of `-a, -i, -g, -j, -t`.
+
+## Dependencies
+
+- Python 3
+- Everything in `requirements.txt`
+- ctags if grading C/C++
+
+## Preparation for homework grading
+
+1. Obtain OAuth2 tokens from canvas and gitea.
+2. Obtain session ID from JOJ cookies.
+3. Obtain homework ID and problem IDs from JOJ URLs.
+4. Obtain number of test cases for each exercise from JOJ scoreboard.
+5. Copy `settings.example.py` to `settings.py`.
+6. Fill in `CANVAS_TOKEN`, `GITEA_TOKEN`, `JOJ_INFO`, `MANDATORY_FILES` and `OPTIONAL_FILES`.
+
+## Usage
+
+```bash
+$ python main.py -h HW_NUM -i -g -j -s
+$ less output/scores.json # gut check grading before releasing
+$ python main.py -h HW_NUM -u
+```
+
+Legacy documentation by Boming attached below.
+
 # VG101-Grade-Helper
 
 A script that perform cast-to-cast VG101 grading for UMJI VG101FA2020-1.
