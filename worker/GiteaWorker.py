@@ -40,9 +40,7 @@ class GiteaWorker:
             pulls = self.sess.get(url).json()
             for pull in pulls:
                 # only match PRs whose title begins with h1, h2, etc
-                if not pull["title"].startswith(f"h{hwNum}") and not re.match(
-                    r"\d{12}", pull["title"]
-                ):
+                if not pull["title"].startswith(f"h{hwNum}"):
                     continue
                 url = f"{self.baseUrl}/repos/{self.orgName}/{repoName}/pulls/{pull['number']}/reviews"
                 self.logger.info(f"{repoName} h{hwNum} get pr: {url}")

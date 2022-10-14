@@ -26,26 +26,37 @@ class CanvasWorker:
         self.scores = totalScores
 
     def generateHomeworkData(self, scoreInfo):
+        # scoreInfo data structure:
+        # {criterion (str): deducted (int, non-zero when deduction applies), ...}
+        # rubric data structure:
+        # {criterion (str): [deduction (float, negative), comment (str)], ...}
         score = 0
-        comment = []
-        for key, value in self.rubric.items():
-            for _ in range(scoreInfo.get(key, 0)):
-                score += value[0]
-                comment.append(f"{value[1]}, {value[0]}")
-        if not comment:
-            comment = ["Good job"]
-        else:
-            comment.insert(0, "General Info:")
-            comment.append("")
-            comment.append("Details:")
-            comment.extend(
-                scoreInfo.get("indvComment", [])
-                + scoreInfo.get("groupComment", [])
-                + scoreInfo.get("jojComment", [])
+        deductions = []
+        for criterion, (deduction, comment) in self.rubric.items():
+            if scoreInfo.get(criterion, 0):
+                score += deduction  # deduction is negative
+                deductions.append((deduction, comment))
+
+        comment = "Good job"
+        if score < 0:
+            indvComment = "; ".join(scoreInfo.get("indvComment", []))
+            groupComment = "; ".join(scoreInfo.get("groupComment", []))
+            jojComment = "; ".join(scoreInfo.get("jojComment", []))
+            comment = (
+                "[Deductions] "
+                + "; ".join(
+                    [f"{comment} ({deduction})" for deduction, comment in deductions]
+                )
+                + " [Details] "
+                + "; ".join(
+                    scoreInfo.get("indvComment", [])
+                    + scoreInfo.get("groupComment", [])
+                    + scoreInfo.get("jojComment", [])
+                )
             )
         return {
             "submission": {"posted_grade": max(score, -2.5)},
-            "comment": {"text_comment": "\n".join(comment)},
+            "comment": {"text_comment": comment},
         }
 
     def grade2Canvas(self):
@@ -62,5 +73,5 @@ class CanvasWorker:
                 continue
             data = self.generateHomeworkData(self.scores[name.title()])
             self.logger.debug(f"{name} {data.__repr__()}")
-            submission.edit(**data)
-            self.logger.info(f"Canvas: graded {name}")
+            # submission.edit(**data)
+            self.logger.info(f"{name} {data['comment']['text_comment']}")

@@ -55,6 +55,7 @@ class GitWorker:
         scores = {
             stuName: {
                 "indvFailSubmit": 0,
+                "indvNoReadme": 0,
                 "indvUntidy": 0,
                 "indvLowCodeQuality": 0,
                 "indvComment": [],
@@ -112,7 +113,7 @@ class GitWorker:
                         self.logger.warning(
                             f"{repoName} {stuID} {stuName} h{hwNum}/README file missing"
                         )
-                        scores[stuName]["indvFailSubmit"] = 1
+                        scores[stuName]["indvNoReadme"] = 1
                         scores[stuName]["indvComment"].append(
                             f"Individual branch is missing h{hwNum}/README file"
                         )
@@ -175,6 +176,7 @@ class GitWorker:
         scores = {
             stuName: {
                 "groupFailSubmit": 0,
+                "groupNoReadme": 0,
                 "groupUntidy": 0,
                 "groupLowCodeQuality": 0,
                 "groupComment": [],
@@ -222,7 +224,7 @@ class GitWorker:
             if not list(filter(GitWorker.isREADME, os.listdir(hwDir))):
                 self.logger.warning(f"{repoName} h{hwNum}/README file missing")
                 for _, stuName in self.hgroups[repoName]:
-                    scores[stuName]["groupFailSubmit"] = 1
+                    scores[stuName]["groupNoReadme"] = 1
                     scores[stuName]["groupComment"].append(
                         f"tags/h{hwNum} h{hwNum}/README file missing"
                     )

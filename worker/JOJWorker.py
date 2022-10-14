@@ -118,11 +118,17 @@ class JOJWorker:
                     for fns, problemID, _ in jojInfo["problemInfo"]
                 ],
             )
-            #  with multiprocessing.Pool(len(jojInfo["problemInfo"])) as p:
-            #  scores = p.starmap(
-            #  self.checkGroupJOJProcess,
-            #  [[i, hwNum, jojInfo, fns, problemID]
-            #  for fns, problemID, _ in jojInfo["problemInfo"]])
+            """
+            with multiprocessing.Pool(len(jojInfo["problemInfo"])) as p:
+                scores = p.starmap(
+                    self.checkGroupJOJProcess,
+                    [
+                        [i, hwNum, jojInfo, fns, problemID]
+                        for fns, problemID, _ in jojInfo["problemInfo"]
+                    ]
+                )
+            """
+            # merge # of accepted cases and # of total cases
             scores = [
                 (score, jojInfo["problemInfo"][j][2]) for j, score in enumerate(scores)
             ]
