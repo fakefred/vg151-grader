@@ -42,17 +42,22 @@ class CanvasWorker:
             indvComment = "; ".join(scoreInfo.get("indvComment", []))
             groupComment = "; ".join(scoreInfo.get("groupComment", []))
             jojComment = "; ".join(scoreInfo.get("jojComment", []))
-            comment = (
-                "[Deductions] "
-                + "; ".join(
+            deductionsComment = (
+                "; ".join(
                     [f"{comment} ({deduction})" for deduction, comment in deductions]
                 )
-                + " [Details] "
-                + "; ".join(
+                or "N/A"
+            )
+            detailsComment = (
+                "; ".join(
                     scoreInfo.get("indvComment", [])
                     + scoreInfo.get("groupComment", [])
                     + scoreInfo.get("jojComment", [])
                 )
+                or "N/A"
+            )
+            comment = (
+                "[Deductions] " + deductionsComment + " [Details] " + detailsComment
             )
         return {
             "submission": {"posted_grade": max(score, -2.5)},
@@ -73,5 +78,5 @@ class CanvasWorker:
                 continue
             data = self.generateHomeworkData(self.scores[name.title()])
             self.logger.debug(f"{name} {data.__repr__()}")
-            # submission.edit(**data)
+            submission.edit(**data)
             self.logger.info(f"{name} {data['comment']['text_comment']}")
